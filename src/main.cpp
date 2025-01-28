@@ -30,7 +30,7 @@ void setup()
   pinMode(YellowButtonPin, INPUT);
   // initialize the LED pin as an output
   pinMode(RedledPin, OUTPUT);
-  pinMode(YellowButtonPin, OUTPUT);
+  pinMode(YellowledPin, OUTPUT);
 }
 
 void loop()
@@ -38,32 +38,32 @@ void loop()
   delay(1000);
   Serial.println("Bip");
   // read the state of the pushbutton value
-  // RbuttonState = digitalRead(RedbuttonPin);
-  // Serial.println(RbuttonState);
+  RbuttonState = digitalRead(RedbuttonPin);
+  Serial.println(RbuttonState);
 
-  // YbuttonState = digitalRead(YellowButtonPin);
-  // Serial.println(YbuttonState);
-  // // check if the pushbutton is pressed.
-  // // if it is, the buttonState is HIGH
-  // if (RbuttonState == HIGH)
-  // {
-  //   // turn LED on
-  //   digitalWrite(RedledPin, HIGH);
-  // }
-  // else
-  // {
-  //   // turn LED off
-  //   digitalWrite(RedledPin, LOW);
-  // }
+  YbuttonState = digitalRead(YellowButtonPin);
+  Serial.println(YbuttonState);
+  // check if the pushbutton is pressed.
+  // if it is, the buttonState is HIGH
+  if (RbuttonState == HIGH)
+  {
+    // turn LED on
+    digitalWrite(RedledPin, HIGH);
+  }
+  else
+  {
+    // turn LED off
+    digitalWrite(RedledPin, LOW);
+  }
 
-  // if (YbuttonState == HIGH)
-  // {
-  //   // turn LED on
-  //   digitalWrite(YellowledPin, HIGH);
-  // }
-  // else
-  // {
-  //   // turn LED off
-  //   digitalWrite(YellowledPin, LOW);
-  // }
+  if (YbuttonState == HIGH)
+  {
+    // turn LED on
+    digitalWrite(YellowledPin, HIGH);
+  }
+  else
+  {
+    // turn LED off
+    digitalWrite(YellowledPin, LOW);
+  }
 }
