@@ -15,10 +15,10 @@ char msg[50];
 int value = 0;
 
 // set pin numbers
-const int RedbuttonPin = 26; // the number of the pushbutton pin
-const int RedledPin = 9;     // the number of the LED pin
-const int YellowButtonPin = 6;
-const int YellowledPin = 7;
+const int RedbuttonPin = 27; // the number of the pushbutton pin
+const int RedledPin = 25;    // the number of the LED pin
+const int YellowButtonPin = 26;
+const int YellowledPin = 13;
 // variable for storing the pushbutton status
 int RbuttonState = 0;
 int YbuttonState = 0;
