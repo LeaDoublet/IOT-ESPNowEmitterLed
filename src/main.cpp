@@ -25,19 +25,26 @@ typedef struct struct_mote2sinkMessage
   int boardId;
   int readingId;
   int timeTag;
-  char text[64];
+  float temperature;
+  float humidity;
+  float distance;
   bool redLedState;    // Nouvel état pour la LED rouge
   bool yellowLedState; // Nouvel état pour la LED Jaune
+  char text[64];
 } struct_mote2sinkMessage;
 
 // Structure pour l'échange des données : Sink -> Mote
 typedef struct struct_sink2moteMessage
 {
   int boardId;
-  bool bool0;
+  int readingId;
+  int timeTag;
+  float temperature;
+  float humidity;
+  float distance;
+  bool redLedState;    // Nouvel état pour la LED rouge
+  bool yellowLedState; // Nouvel état pour la LED Jaune
   char text[64];
-  bool redLedState; // Nouvel état pour la LED rouge
-  bool yellowLedState;
 } struct_sink2moteMessage;
 
 struct_sink2moteMessage espNow_incomingMessage;
@@ -53,8 +60,8 @@ const int RedledPin = 25;    // the number of the LED pin
 const int YellowButtonPin = 26;
 const int YellowledPin = 13;
 // variable for storing the pushbutton status
-int RbuttonState = 0;
-int YbuttonState = 0;
+bool RbuttonState = 0;
+bool YbuttonState = 0;
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 {
@@ -70,9 +77,16 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *incomingData, int len)
 {
-  memcpy(&espNow_incomingMessage, incomingData, sizeof(espNow_incomingMessage));
-  Serial.println("Message reçu du Sink :");
-  Serial.printf("Board ID: %d, Bool: %d, Texte: %s\n", espNow_incomingMessage.boardId, espNow_incomingMessage.bool0, espNow_incomingMessage.text);
+  if (len == sizeof(espNow_incomingMessage))
+  {
+    memcpy(&espNow_incomingMessage, incomingData, sizeof(espNow_incomingMessage));
+    Serial.println("Message reçu du Sink :");
+    Serial.printf("Board ID: %d, Texte: %s\n", espNow_incomingMessage.boardId, espNow_incomingMessage.text);
+  }
+  else
+  {
+    Serial.println("Données reçues de taille incorrecte !");
+  }
 }
 
 void setup()
