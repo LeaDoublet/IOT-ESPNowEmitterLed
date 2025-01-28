@@ -26,6 +26,8 @@ typedef struct struct_mote2sinkMessage
   int readingId;
   int timeTag;
   char text[64];
+  bool redLedState;    // Nouvel état pour la LED rouge
+  bool yellowLedState; // Nouvel état pour la LED Jaune
 } struct_mote2sinkMessage;
 
 // Structure pour l'échange des données : Sink -> Mote
@@ -34,6 +36,8 @@ typedef struct struct_sink2moteMessage
   int boardId;
   bool bool0;
   char text[64];
+  bool redLedState; // Nouvel état pour la LED rouge
+  bool yellowLedState;
 } struct_sink2moteMessage;
 
 struct_sink2moteMessage espNow_incomingMessage;
@@ -130,23 +134,27 @@ void loop()
   struct_mote2sinkMessage outgoingMessage;
   outgoingMessage.boardId = 1;                 // ID de la carte
   outgoingMessage.readingId = millis() / 1000; // Identifiant basé sur le temps
-  outgoingMessage.timeTag = millis();          // Timestamp
-  if (RbuttonState == HIGH && YbuttonState == HIGH)
-  {
-    strcpy(outgoingMessage.text, "Les deux boutons sont pressés !");
-  }
-  else if (RbuttonState == HIGH)
-  {
-    strcpy(outgoingMessage.text, "Bouton rouge pressé.");
-  }
-  else if (YbuttonState == HIGH)
-  {
-    strcpy(outgoingMessage.text, "Bouton jaune pressé.");
-  }
-  else
-  {
-    strcpy(outgoingMessage.text, "Aucun bouton pressé.");
-  }
+  outgoingMessage.timeTag = millis();
+  outgoingMessage.redLedState = RbuttonState;    // Ajouter l'état de la LED rouge
+  outgoingMessage.yellowLedState = YbuttonState; // Ajouter l'état de la LED jaune
+                                                 // Timestamp
+  // if (RbuttonState == HIGH && YbuttonState == HIGH)
+  // {
+  //   strcpy(outgoingMessage.text, "Les deux boutons sont pressés !");
+
+  // }
+  // else if (RbuttonState == HIGH)
+  // {
+  //   strcpy(outgoingMessage.text, "Bouton rouge pressé.");
+  // }
+  // else if (YbuttonState == HIGH)
+  // {
+  //   strcpy(outgoingMessage.text, "Bouton jaune pressé.");
+  // }
+  // else
+  // {
+  //   strcpy(outgoingMessage.text, "Aucun bouton pressé.");
+  // }
 
   // Envoyer le message au sink
   esp_now_send(broadcastAddress, (uint8_t *)&outgoingMessage, sizeof(outgoingMessage));
