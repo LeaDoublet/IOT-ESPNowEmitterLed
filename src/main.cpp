@@ -60,8 +60,10 @@ const int RedledPin = 25;    // the number of the LED pin
 const int YellowButtonPin = 26;
 const int YellowledPin = 13;
 // variable for storing the pushbutton status
-bool RbuttonState = 0;
-bool YbuttonState = 0;
+bool RedLedState = false;
+bool YellowLedState = false;
+bool LastRedButtonState = false;
+bool LastYellowButtonState = false;
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 {
@@ -130,48 +132,37 @@ void setup()
 
 void loop()
 {
+  bool currentRedButtonState = digitalRead(RedbuttonPin);
+  bool currentYellowButtonState = digitalRead(YellowButtonPin);
+
+  if (currentRedButtonState && !LastRedButtonState)
+  {
+    RedLedState = !RedLedState; // Toggle de l'état de la LED
+    Serial.println(RedLedState ? "LED Rouge allumée" : "LED Rouge éteinte");
+  }
+  if (currentYellowButtonState && !LastYellowButtonState)
+  {
+    YellowLedState = !YellowLedState; // Toggle de l'état de la LED
+    Serial.println(YellowLedState ? "LED Jaune allumée" : "LED Jaune éteinte");
+  }
   // delay(1000);
   // Serial.println("Bip");
-  //  read the state of the pushbutton value
-  RbuttonState = digitalRead(RedbuttonPin);
-  Serial.println(RbuttonState);
 
-  YbuttonState = digitalRead(YellowButtonPin);
-  Serial.println(YbuttonState);
-  // check if the pushbutton is pressed.
-  // if it is, the buttonState is HIGH
-  // Mettre à jour les LEDs
-  digitalWrite(RedledPin, RbuttonState);
-  digitalWrite(YellowledPin, YbuttonState);
+  digitalWrite(RedledPin, RedLedState);
+  digitalWrite(YellowledPin, YellowLedState);
 
   // Créer un message pour le sink
   struct_mote2sinkMessage outgoingMessage;
   outgoingMessage.boardId = 1;                 // ID de la carte
   outgoingMessage.readingId = millis() / 1000; // Identifiant basé sur le temps
   outgoingMessage.timeTag = millis();
-  outgoingMessage.redLedState = RbuttonState;    // Ajouter l'état de la LED rouge
-  outgoingMessage.yellowLedState = YbuttonState; // Ajouter l'état de la LED jaune
-                                                 // Timestamp
-  // if (RbuttonState == HIGH && YbuttonState == HIGH)
-  // {
-  //   strcpy(outgoingMessage.text, "Les deux boutons sont pressés !");
-
-  // }
-  // else if (RbuttonState == HIGH)
-  // {
-  //   strcpy(outgoingMessage.text, "Bouton rouge pressé.");
-  // }
-  // else if (YbuttonState == HIGH)
-  // {
-  //   strcpy(outgoingMessage.text, "Bouton jaune pressé.");
-  // }
-  // else
-  // {
-  //   strcpy(outgoingMessage.text, "Aucun bouton pressé.");
-  // }
-
+  outgoingMessage.redLedState = RedLedState;
+  outgoingMessage.yellowLedState = YellowLedState; // Ajouter l'état de la LED jaune
   // Envoyer le message au sink
   esp_now_send(broadcastAddress, (uint8_t *)&outgoingMessage, sizeof(outgoingMessage));
+  // Mise à jour des états précédents des boutons
+  LastRedButtonState = currentRedButtonState;
+  LastYellowButtonState = currentYellowButtonState;
 
   // Attendre 500 ms
   delay(500);
